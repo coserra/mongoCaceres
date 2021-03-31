@@ -37,8 +37,11 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 		GameObject _directionsGO;
 		private bool _recalculateNext;
 
+		public RoutingProfile routingProfile { set; get; }
+
 		protected virtual void Awake()
 		{
+			routingProfile = RoutingProfile.Walking;
 			if (_map == null)
 			{
 				_map = FindObjectOfType<AbstractMap>();
@@ -79,7 +82,7 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			{
 				wp[i] = _waypoints[i].GetGeoPosition(_map.CenterMercator, _map.WorldRelativeScale);
 			}
-			var _directionResource = new DirectionResource(wp, RoutingProfile.Driving);
+			var _directionResource = new DirectionResource(wp, routingProfile);
 			_directionResource.Steps = true;
 			_directions.Query(_directionResource, HandleDirectionsResponse);
 		}
@@ -161,5 +164,4 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			return _directionsGO;
 		}
 	}
-
 }
