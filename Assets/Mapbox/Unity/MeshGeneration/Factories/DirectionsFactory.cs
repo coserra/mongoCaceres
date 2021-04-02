@@ -163,5 +163,15 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			_directionsGO.AddComponent<MeshRenderer>().material = _material;
 			return _directionsGO;
 		}
+
+		public void changeWaypoint(int index, Transform waypointTransform)
+		{
+		if (index >= 0 && index < _waypoints.Length)
+            {
+				_waypoints[index] = waypointTransform;
+            }
+
+		}
 	}
+
 }
