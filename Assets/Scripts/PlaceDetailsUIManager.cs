@@ -33,6 +33,6 @@ public class PlaceDetailsUIManager : MonoBehaviour
 
     public void SetWaypointInDirecction()
     {
-        GameObject.Find("Directions").GetComponent<DirectionsFactory>().changeWaypoint(1,waypoint.transform);
+        GameObject.Find("Directions").GetComponent<DirectionsManager>().changeWaypoint(1,waypoint.transform);
     }
 }

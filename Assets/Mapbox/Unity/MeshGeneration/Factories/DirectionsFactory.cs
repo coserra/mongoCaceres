@@ -56,7 +56,8 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			_cachedWaypoints = new List<Vector3>(_waypoints.Length);
 			foreach (var item in _waypoints)
 			{
-				_cachedWaypoints.Add(item.position);
+				if(item!=null)
+					_cachedWaypoints.Add(item.position);
 			}
 			_recalculateNext = false;
 
@@ -94,7 +95,7 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 				yield return new WaitForSeconds(UpdateFrequency);
 				for (int i = 0; i < _waypoints.Length; i++)
 				{
-					if (_waypoints[i].position != _cachedWaypoints[i])
+					if (_waypoints[i]!=null && _waypoints[i].position != _cachedWaypoints[i])
 					{
 						_recalculateNext = true;
 						_cachedWaypoints[i] = _waypoints[i].position;
