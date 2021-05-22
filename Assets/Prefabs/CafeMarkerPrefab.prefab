@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4326026793195330255}
   - component: {fileID: 2204881952157376899}
   - component: {fileID: 451002884644114849}
+  - component: {fileID: 2217522159508923199}
   m_Layer: 0
   m_Name: imagen
   m_TagString: Untagged
@@ -109,6 +110,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detailsPanel: {fileID: 0}
+--- !u!95 &2217522159508923199
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4681573886972518773}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9414d1b6ebafbd74cb793ed005e453d0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6886222359965881326
 GameObject:
   m_ObjectHideFlags: 0

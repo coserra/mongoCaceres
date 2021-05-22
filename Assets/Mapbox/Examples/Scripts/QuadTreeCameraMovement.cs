@@ -6,6 +6,11 @@
 	using UnityEngine;
 	using UnityEngine.EventSystems;
 	using System;
+    using UnityEngine.Events;
+
+
+	[Serializable]
+	public class StringEvent : UnityEvent<string> { }
 
 	public class QuadTreeCameraMovement : MonoBehaviour
 	{
@@ -32,6 +37,8 @@
 		private bool _isInitialized = false;
 		private Plane _groundPlane = new Plane(Vector3.up, 0);
 		private bool _dragStartedOnUI = false;
+
+		[SerializeField] StringEvent OnPositionInfo;
 
 		void Awake()
 		{
@@ -180,6 +187,8 @@
 
 				var latlongDelta = _mapManager.WorldToGeoPosition(pos);
 				Debug.Log("Latitude: " + latlongDelta.x + " Longitude: " + latlongDelta.y);
+				if (OnPositionInfo != null)
+					OnPositionInfo.Invoke(latlongDelta.x+","+latlongDelta.y);
 			}
 
 			if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())

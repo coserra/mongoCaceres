@@ -14,17 +14,26 @@ public class WaypointData
         monumento,
         restaurante
     }
+    public static TypeOfPlace[] typeOfPlaces = { TypeOfPlace.alojamiento,TypeOfPlace.barCopas,
+        TypeOfPlace.cafebar,TypeOfPlace.centroTuristico,TypeOfPlace.monumento,TypeOfPlace.restaurante};
 
-    public string position { set; get; }
-    public TypeOfPlace type { set; get; }
-    public string name { set; get; }
-    public string uri { set; get; }
+    public string Coordinates { set; get; }
+    public TypeOfPlace Type { set; get; }
+   
+    public string Name { set; get; }
+    public string Address { set; get; }
+    public string Uri { set; get; }
+    public string Email { set; get; }
+    public string Telephone { set; get; }
 
-    public WaypointData(string position, TypeOfPlace type, string name, string uri)
+    public WaypointData(string coordinates, TypeOfPlace type, string name, string direction, string uri,string email, string telephone)
     {
-        this.position = position;
-        this.type = type;
-        this.name = name;
-        this.uri = uri;
+        this.Coordinates = coordinates;
+        this.Type = type;
+        this.Name = name;
+        this.Address = direction;
+        this.Uri = uri;
+        this.Email = email;
+        this.Telephone = telephone;
     }
 }

@@ -39,6 +39,7 @@ public class DirectionsManager : MonoBehaviour
     private bool _recalculateNext;
     private float lastMapZoom;
     private DirectionsResponse lastDirectionsResponse;
+    private bool directionActive=true;
 
     public RoutingProfile routingProfile { set; get; }
 
@@ -95,55 +96,61 @@ public class DirectionsManager : MonoBehaviour
 
     void HandleDirectionsResponse(DirectionsResponse response)
     {
-        Debug.Log("Llamada a handle");
-        lastDirectionsResponse = response;
-        if (response == null || null == response.Routes || response.Routes.Count < 1)
+        if (directionActive)
         {
-            return;
+            Debug.Log("Llamada a handle");
+            lastDirectionsResponse = response;
+            if (response == null || null == response.Routes || response.Routes.Count < 1)
+            {
+                return;
+            }
+
+            var meshData = new MeshData();
+            var dat = new List<Vector3>();
+            foreach (var point in response.Routes[0].Geometry)
+            {
+                dat.Add(Conversions.GeoToWorldPosition(point.x, point.y, _map.CenterMercator, _map.WorldRelativeScale).ToVector3xz());
+            }
+
+            var feat = new VectorFeatureUnity();
+            feat.Points.Add(dat);
+
+            foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
+            {
+                mod.Run(feat, meshData, _map.WorldRelativeScale);
+            }
+
+            CreateGameObject(meshData);
         }
-
-        var meshData = new MeshData();
-        var dat = new List<Vector3>();
-        foreach (var point in response.Routes[0].Geometry)
-        {
-            dat.Add(Conversions.GeoToWorldPosition(point.x, point.y, _map.CenterMercator, _map.WorldRelativeScale).ToVector3xz());
-        }
-
-        var feat = new VectorFeatureUnity();
-        feat.Points.Add(dat);
-
-        foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
-        {
-            mod.Run(feat, meshData, _map.WorldRelativeScale);
-        }
-
-        CreateGameObject(meshData);
     }
 
     void ProcessLastResponse()
     {
-        Debug.Log("Llamada a handle");
-        if (lastDirectionsResponse == null || null == lastDirectionsResponse.Routes || lastDirectionsResponse.Routes.Count < 1)
+        if (directionActive)
         {
-            return;
+            Debug.Log("Llamada a handle");
+            if (lastDirectionsResponse == null || null == lastDirectionsResponse.Routes || lastDirectionsResponse.Routes.Count < 1)
+            {
+                return;
+            }
+
+            var meshData = new MeshData();
+            var dat = new List<Vector3>();
+            foreach (var point in lastDirectionsResponse.Routes[0].Geometry)
+            {
+                dat.Add(Conversions.GeoToWorldPosition(point.x, point.y, _map.CenterMercator, _map.WorldRelativeScale).ToVector3xz());
+            }
+
+            var feat = new VectorFeatureUnity();
+            feat.Points.Add(dat);
+
+            foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
+            {
+                mod.Run(feat, meshData, _map.WorldRelativeScale);
+            }
+
+            CreateGameObject(meshData);
         }
-
-        var meshData = new MeshData();
-        var dat = new List<Vector3>();
-        foreach (var point in lastDirectionsResponse.Routes[0].Geometry)
-        {
-            dat.Add(Conversions.GeoToWorldPosition(point.x, point.y, _map.CenterMercator, _map.WorldRelativeScale).ToVector3xz());
-        }
-
-        var feat = new VectorFeatureUnity();
-        feat.Points.Add(dat);
-
-        foreach (MeshModifier mod in MeshModifiers.Where(x => x.Active))
-        {
-            mod.Run(feat, meshData, _map.WorldRelativeScale);
-        }
-
-        CreateGameObject(meshData);
     }
 
     GameObject CreateGameObject(MeshData data)
@@ -218,6 +225,7 @@ public class DirectionsManager : MonoBehaviour
     public void ShowDirection(bool show)
     {
         _directionsGO.SetActive(show);
+        directionActive = show;
     }
 
 }

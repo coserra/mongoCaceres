@@ -21,14 +21,16 @@ public class MenuUIManager : MonoBehaviour
 
     public void ShowMenu()
     {
-        detailsPanel.SetActive(false);
+        //detailsPanel.SetActive(false);
+        detailsPanel.GetComponent<Animator>().SetTrigger("close");
+        detailsPanel.GetComponent<Animator>().ResetTrigger("close");
         menuButton.SetActive(false);
-        gameObject.SetActive(true);
+        //gameObject.SetActive(true);
     }
 
     public void HideMenu()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         menuButton.SetActive(true);
     }
 }
