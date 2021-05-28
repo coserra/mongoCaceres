@@ -2227,6 +2227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 469963854}
   - component: {fileID: 469963853}
+  - component: {fileID: 469963855}
   m_Layer: 0
   m_Name: MongoNetworking
   m_TagString: Untagged
@@ -2241,7 +2242,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 469963852}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d9f74c45d4a27f468597835b999b88a, type: 3}
   m_Name: 
@@ -2260,6 +2261,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &469963855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469963852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c633e5fd08f9e343875d0c2daaac391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &567431528
 GameObject:
   m_ObjectHideFlags: 0
@@ -8710,9 +8723,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _map: {fileID: 2071166807}
   directionsManager: {fileID: 1276239787}
+  jsonReader: {fileID: 469963855}
   _spawnScale: 8
   user: {fileID: 1154725779}
-  alojamientoPrefab: {fileID: 8044410865650213356, guid: ebdd24b6ee04a28418ecbe9b695d790d,
+  alojamientoPrefab: {fileID: 7118649725069837803, guid: c7ebe4391bcfbb94dba3080f7862bfdd,
     type: 3}
   barCopasPrefab: {fileID: 1134951759399704713, guid: c08f2f46deeb2ce4fae67cc5b076e748,
     type: 3}

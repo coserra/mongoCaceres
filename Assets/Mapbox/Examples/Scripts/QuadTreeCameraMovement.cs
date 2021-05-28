@@ -188,7 +188,7 @@
 				var latlongDelta = _mapManager.WorldToGeoPosition(pos);
 				Debug.Log("Latitude: " + latlongDelta.x + " Longitude: " + latlongDelta.y);
 				if (OnPositionInfo != null)
-					OnPositionInfo.Invoke(latlongDelta.x+","+latlongDelta.y);
+					OnPositionInfo.Invoke(latlongDelta.x.ToString().Replace(",",".")+","+latlongDelta.y.ToString().Replace(",", "."));
 			}
 
 			if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
