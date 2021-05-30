@@ -147,31 +147,43 @@ public class JsonReader : MonoBehaviour
         return lista;
     }
 
+    public List<WaypointData> GetNear(string position)
+    {
+        BsonDocument t = new BsonDocument();
+        string[] coordenadas = new string[2];
+        coordenadas = position.Split(new string[] { "," }, StringSplitOptions.None);
+        t = BsonDocument.Parse("{  geometry:   { $near:  {    $geometry: { type: \"Point\",  coordinates:[" + coordenadas[1] + ", " + coordenadas[0] + "] } }}   }");
+        List<WaypointData> lista = new List<WaypointData>();
+        var collection = database.GetCollection<BsonDocument>("Todo"); ;
+        var secondDocument = collection.Find(t).ToList();
+        for(int i = 0; i < 5; i++)
+        {
+            lista.Add(JsonToWaypoint(secondDocument[i].ToString(), TypeOfPlace.alojamiento, true));
+        }
+        foreach (var document in secondDocument.AsEnumerable())
+        {
+            lista.Add(JsonToWaypoint(document.ToString(), TypeOfPlace.alojamiento, true));
+        }
+
+        return lista;
+    }
+
     public List<WaypointData> GetNear(bool[] types, string position)
     {
         BsonDocument t = new BsonDocument();
-
         string[] coordenadas = new string[2];
-
         coordenadas = position.Split(new string[] { "," }, StringSplitOptions.None);
         t = BsonDocument.Parse("{  geometry:   { $near:  {    $geometry: { type: \"Point\",  coordinates:[" + coordenadas[1] + ", " + coordenadas[0] + "] } }}   }");
-
         List<WaypointData> lista = new List<WaypointData>();
-
-        var collection = database.GetCollection<BsonDocument>("Todo"); ;
-
+        var collection = database.GetCollection<BsonDocument>("Todo"); 
         var secondDocument = collection.Find(t).ToList();
-
         WaypointData aux = null;
-
         int contador = 0;//Contador para devolver max 5 resultados
-
         foreach (var document in secondDocument.AsEnumerable())
         {
             if (contador < 5)
             {
                 aux = JsonToWaypoint(document.ToString(), TypeOfPlace.restaurante, true);
-
                 switch (aux.Type)
                 {
                     case TypeOfPlace.alojamiento:
@@ -225,11 +237,8 @@ public class JsonReader : MonoBehaviour
             {
                 return lista;
             }
-
         }
-
         return lista;
-
     }
 
     public WaypointData JsonToWaypoint(string t, TypeOfPlace a, bool todo)

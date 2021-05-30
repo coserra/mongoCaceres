@@ -40,6 +40,10 @@
 
 		[SerializeField] StringEvent OnPositionInfo;
 
+		private Vector3 lastMousePosition;
+		private float timeFromPressed;
+		private bool holdMouse;
+
 		void Awake()
 		{
 			if (null == _referenceCamera)
@@ -177,8 +181,9 @@
 
 		void UseMeterConversion()
 		{
-			if (Input.GetMouseButtonUp(1))
+			if (Input.GetMouseButtonUp(1)||holdMouse)
 			{
+				holdMouse = false;
 				var mousePosScreen = Input.mousePosition;
 				//assign distance of camera to ground plane to z, otherwise ScreenToWorldPoint() will always return the position of the camera
 				//http://answers.unity3d.com/answers/599100/view.html
@@ -193,6 +198,20 @@
 
 			if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
 			{
+				if (Input.mousePosition == lastMousePosition)
+                {
+					if (Time.time - timeFromPressed > 0.75f)
+                    {
+						holdMouse = true;
+                    }
+				}
+                else
+                {
+					timeFromPressed = Time.time;
+					Debug.Log(Time.time);
+                }
+					
+				lastMousePosition = Input.mousePosition;
 				var mousePosScreen = Input.mousePosition;
 				//assign distance of camera to ground plane to z, otherwise ScreenToWorldPoint() will always return the position of the camera
 				//http://answers.unity3d.com/answers/599100/view.html

@@ -5,6 +5,7 @@ using Mapbox.Unity.MeshGeneration.Factories;
 using Mapbox.Unity.Utilities;
 using System.Collections.Generic;
 using System.Collections;
+using TMPro;
 
 public class InterestPointsOnMap : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class InterestPointsOnMap : MonoBehaviour
 
 	private float distanceFilter;
 	private bool[] typeFilter;
+	private bool allUnselected;
 
 	private int imageNumber=0;
 
@@ -43,6 +45,7 @@ public class InterestPointsOnMap : MonoBehaviour
 	void Start()
 	{
 		typeFilter = new bool[6];
+		allUnselected = true;
 		_waypointList = new List<WaypointData>();
 		_locations = new List<Vector2d>();
 		_spawnedObjects = new List<GameObject>();
@@ -106,7 +109,7 @@ public class InterestPointsOnMap : MonoBehaviour
 		_spawnedObjects.Add(instance);
 	}
 
-	public void newPlace(WaypointData waypoint)
+	public void newPlace(WaypointData waypoint, bool withName)
 	{
 		
 		_waypointList.Add(waypoint);
@@ -134,7 +137,10 @@ public class InterestPointsOnMap : MonoBehaviour
 				break;
 		}
 		instance.transform.GetChild(1).GetComponent<WayPointColliderHandler>().waypointData = waypoint;
-		instance.transform.GetChild(0).GetComponent<TextMesh>().text = waypoint.Name;
+		if(withName)
+			instance.transform.GetChild(0).GetComponent<TextMesh>().text = waypoint.Name;
+		else
+			instance.transform.GetChild(0).GetComponent<TextMesh>().text = "";
 		instance.transform.localPosition = _map.GeoToWorldPosition(_locations[_locations.Count - 1], true);
 		instance.transform.localScale = new Vector3(_spawnScale, _spawnScale, _spawnScale);
 		_spawnedObjects.Add(instance);
@@ -142,16 +148,17 @@ public class InterestPointsOnMap : MonoBehaviour
 
 	public void NewWaypoints(List<WaypointData> wayPointDataList)
     {
+		bool withName = wayPointDataList.Count < 50;
 		foreach(WaypointData wp in wayPointDataList)
         {
-			StartCoroutine(CreateWayPointDelayed(wp));
+			StartCoroutine(CreateWayPointDelayed(wp,withName));
         }
     }
 
-	IEnumerator CreateWayPointDelayed(WaypointData wp)
+	IEnumerator CreateWayPointDelayed(WaypointData wp, bool withName)
     {
 		yield return new WaitForSeconds(Random.Range(0, 0.5f));
-		newPlace(wp);
+		newPlace(wp, withName);
 	}
 
 	public void ClearWaypoints()
@@ -205,14 +212,18 @@ public class InterestPointsOnMap : MonoBehaviour
 	public void ActiveTypeFilter(int type)
     {
 		typeFilter[type] = !typeFilter[type];
-		//if (!typeFilter[type])
-        //{
-		//	typeFilter[type] = true;
-        //}
-        //else
-        //{
-		//	typeFilter[type] = false;
-        //}
+
+		bool searching = true;
+		for (int i = 0; i < typeFilter.Length&&searching; i++)
+        {
+			if (typeFilter[i])
+            {
+				searching = false;
+				allUnselected = false;
+            }
+            else { allUnselected = true; }
+        }
+        
     }
 
 	public void ChangeMapImage()
@@ -235,19 +246,27 @@ public class InterestPointsOnMap : MonoBehaviour
 		
     }
 
-    #region mongo
+	#region mongo
 	public void ShowPlacesByType()
-    {
-		List<WaypointData> waypointDataList=new List<WaypointData>();
-		Debug.Log("[ShowPlacesByType]"+userWayPointData.Coordinates + " " + distanceFilter);
-		waypointDataList.AddRange(jsonReader.GetByTypeLong(typeFilter, userWayPointData.Coordinates, distanceFilter));
-		//waypointDataList.AddRange(jsonReader.GetAllPlaces());
-		Debug.Log("Resultados obtenidos:" + waypointDataList.Count);
-		if (waypointDataList.Count > 0)
+	{
+		List<WaypointData> waypointDataList = new List<WaypointData>();
+		Debug.Log("[ShowPlacesByType]" + userWayPointData.Coordinates + " " + distanceFilter);
+		if (allUnselected)
 		{
-			Debug.Log(waypointDataList[0].Name + " " + waypointDataList[0].Coordinates + " " + waypointDataList[0].Telephone);
+			waypointDataList.AddRange(jsonReader.GetAllPlaces());
 		}
-
+		else
+		{
+			if (distanceFilter == 0)
+			{
+				waypointDataList.AddRange(jsonReader.GetByType(typeFilter));
+			}
+			else
+			{
+				waypointDataList.AddRange(jsonReader.GetByTypeLong(typeFilter, userWayPointData.Coordinates, distanceFilter));
+			}
+		}
+		Debug.Log("Resultados obtenidos:" + waypointDataList.Count);
 		ClearWaypoints();
 		NewWaypoints(waypointDataList);
 	}
@@ -268,14 +287,15 @@ public class InterestPointsOnMap : MonoBehaviour
 	public void ShowNearPlaces(string position)
     {
 		List<WaypointData> waypointDataList = new List<WaypointData>();
-
-		waypointDataList.AddRange(jsonReader.GetNear(typeFilter, position));
-		Debug.Log("Resultados obtenidos:" + waypointDataList.Count);
-		if (waypointDataList.Count > 0)
+		if (allUnselected)
 		{
-			Debug.Log(waypointDataList[0].Name + " " + waypointDataList[0].Coordinates + " " + waypointDataList[0].Telephone);
+			bool[] allTrue = { true, true, true, true, true, true };
+			waypointDataList.AddRange(jsonReader.GetNear(allTrue, position));
 		}
-
+		else
+		{
+			waypointDataList.AddRange(jsonReader.GetNear(typeFilter, position));
+		}
 		ClearWaypoints();
 		NewWaypoints(waypointDataList);
     }
